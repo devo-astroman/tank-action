@@ -43,7 +43,7 @@ public sealed class TankFire : MonoBehaviour
         teleportMaterial = new Material(shader) { color = Color.green };
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         Keyboard keyboard = Keyboard.current;
         if (keyboard != null)
