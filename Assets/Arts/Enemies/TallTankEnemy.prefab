@@ -14320,6 +14320,8 @@ MonoBehaviour:
   moveSpeed: 2
   contactDamage: 10
   damageInterval: 1
+  damageSound: {fileID: 8300000, guid: 11c63d240e734564ebdbc79a567f35d6, type: 3}
+  destroySound: {fileID: 8300000, guid: 3b670b6737c52c7418a3fc22701064b7, type: 3}
 --- !u!114 &5323254053887348468
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14335,6 +14337,7 @@ MonoBehaviour:
   turret: {fileID: 962002702894740854}
   cannon: {fileID: 6857261805237782481}
   muzzle: {fileID: 6555083864767842131}
+  fireSound: {fileID: 8300000, guid: 7265c20b785e1534bab8ad1c34d643b0, type: 3}
 --- !u!1 &7129757621945219604
 GameObject:
   m_ObjectHideFlags: 0

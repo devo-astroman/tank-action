@@ -6,6 +6,7 @@ public sealed class TankFire : MonoBehaviour
 {
     [SerializeField] private Transform cannon;
     [SerializeField] private Transform muzzle;
+    [SerializeField] private AudioClip fireSound;
     [SerializeField] private Collider floor;
     [SerializeField, Min(0.1f)] private float projectileSpeed = 15f;
     [SerializeField, Min(0.05f)] private float fireInterval = 0.2f;
@@ -75,6 +76,7 @@ public sealed class TankFire : MonoBehaviour
     public void FireAt(Vector3 target)
     {
         if (SelectedWeapon == 4 && !HasTeleportMark) return;
+        GameSound.Play(fireSound);
         Vector3 shotOrigin = muzzle != null ? muzzle.position : cannon.position + cannon.forward * (Mathf.Abs(cannon.lossyScale.z) * 0.5f + 0.2f);
         GameObject shot = GameObject.CreatePrimitive(PrimitiveType.Cube);
         shot.name = SelectedWeapon == 4 ? "Green Teleport Bullet" : SelectedWeapon == 3 ? "Yellow Acid Bullet" : BlueMissileSelected ? "Blue Missile" : "Red Projectile";

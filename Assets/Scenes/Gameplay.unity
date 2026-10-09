@@ -848,6 +848,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TankFire
   cannon: {fileID: 742805080}
   muzzle: {fileID: 933929479}
+  fireSound: {fileID: 8300000, guid: a04902fc467a17a4ba55704cc76527ae, type: 3}
   floor: {fileID: 1100000004}
   projectileSpeed: 15
   fireInterval: 0.2
@@ -865,6 +866,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TankHealth
   maxHealth: 100
+  damageSound: {fileID: 8300000, guid: 55551d56f39b3f446a00bf2b8bf36e09, type: 3}
 --- !u!114 &822970646
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -10477,6 +10477,8 @@ MonoBehaviour:
   moveSpeed: 2
   contactDamage: 10
   damageInterval: 1
+  damageSound: {fileID: 8300000, guid: 11c63d240e734564ebdbc79a567f35d6, type: 3}
+  destroySound: {fileID: 8300000, guid: 3b670b6737c52c7418a3fc22701064b7, type: 3}
 --- !u!1 &9132585103316399917
 GameObject:
   m_ObjectHideFlags: 0

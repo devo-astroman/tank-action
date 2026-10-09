@@ -5,6 +5,8 @@ public sealed class EnemyAttack : MonoBehaviour
     [SerializeField, Min(0f)] private float moveSpeed = 2f;
     [SerializeField, Min(1)] private int contactDamage = 10;
     [SerializeField, Min(0.1f)] private float damageInterval = 1f;
+    [SerializeField] private AudioClip damageSound;
+    [SerializeField] private AudioClip destroySound;
     public int HitsRemaining { get; private set; } = 3;
     private TankHealth tank;
     private Collider tankCollider;
@@ -51,9 +53,11 @@ public sealed class EnemyAttack : MonoBehaviour
     {
         if (HitsRemaining <= 0) return;
         HitsRemaining--;
+        GameSound.Play(damageSound);
         damageFlash.Flash();
         if (HitsRemaining == 0)
         {
+            GameSound.Play(destroySound);
             EnemyWaves waves = Object.FindFirstObjectByType<EnemyWaves>();
             if (waves != null) waves.EnemyDefeated();
             foreach (Collider collider in GetComponentsInChildren<Collider>()) collider.enabled = false;

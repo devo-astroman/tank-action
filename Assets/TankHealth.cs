@@ -4,6 +4,7 @@ using UnityEngine;
 public sealed class TankHealth : MonoBehaviour
 {
     [SerializeField, Min(1)] private int maxHealth = 100;
+    [SerializeField] private AudioClip damageSound;
     public int CurrentHealth { get; private set; }
     public bool IsAlive => CurrentHealth > 0;
     private DamageFlash damageFlash;
@@ -17,6 +18,7 @@ public sealed class TankHealth : MonoBehaviour
     {
         if (!IsAlive || amount <= 0) return;
         CurrentHealth = Mathf.Max(0, CurrentHealth - Mathf.Max(0, amount));
+        GameSound.Play(damageSound);
         damageFlash.Flash();
         if (!IsAlive)
         {

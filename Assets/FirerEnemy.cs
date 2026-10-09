@@ -7,6 +7,7 @@ public sealed class FirerEnemy : MonoBehaviour
     [SerializeField] private Transform turret;
     [SerializeField] private Transform cannon;
     [SerializeField] private Transform muzzle;
+    [SerializeField] private AudioClip fireSound;
     private float nextFire;
 
     public void Initialize(TankHealth target, EnemyAttack health, Transform barrel)
@@ -36,5 +37,6 @@ public sealed class FirerEnemy : MonoBehaviour
         float barrelLength = barrel != null ? barrel.bounds.extents.magnitude : 1f;
         Vector3 shotOrigin = muzzle != null ? muzzle.position : cannon.position + cannon.forward * (barrelLength + 0.2f);
         EnemyBullet.Spawn(shotOrigin, (tank.transform.position - shotOrigin).normalized, transform);
+        GameSound.Play(fireSound);
     }
 }
