@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 public sealed class TankFire : MonoBehaviour
 {
     [SerializeField] private Transform cannon;
+    [SerializeField] private Transform muzzle;
     [SerializeField] private Collider floor;
     [SerializeField, Min(0.1f)] private float projectileSpeed = 15f;
     [SerializeField, Min(0.05f)] private float fireInterval = 0.2f;
@@ -29,8 +30,11 @@ public sealed class TankFire : MonoBehaviour
     {
         if (cannon == null) { enabled = false; return; }
         pivot = cannon.localPosition;
+        if (muzzle == null)
+        {
         barrelOffset = pivot.z;
         pivot.z = 0f;
+        }
         Shader shader = Shader.Find("Universal Render Pipeline/Lit");
         if (shader == null) shader = Shader.Find("Standard");
         projectileMaterial = new Material(shader) { color = Color.red };
@@ -55,12 +59,12 @@ public sealed class TankFire : MonoBehaviour
         Ray ray = camera.ScreenPointToRay(mouse.position.ReadValue());
         if (!floor.Raycast(ray, out RaycastHit hit, 1000f)) return;
         if (SelectedWeapon == 4 && mouse.rightButton.wasPressedThisFrame) PlaceTeleportMark(hit.point);
-        Vector3 origin = transform.TransformPoint(pivot);
+        Vector3 origin = cannon.parent.TransformPoint(pivot);
         Vector3 direction = hit.point - origin;
         direction.y = 0f;
         if (direction.sqrMagnitude < 0.0001f) return;
         cannon.rotation = Quaternion.LookRotation(direction.normalized, Vector3.up);
-        cannon.position = origin + cannon.forward * barrelOffset * transform.lossyScale.z;
+        if (muzzle == null) cannon.position = origin + cannon.forward * barrelOffset * transform.lossyScale.z;
         if (mouse.leftButton.isPressed && Time.time >= nextFire && (SelectedWeapon != 4 || HasTeleportMark))
         {
             nextFire = Time.time + CurrentFireInterval;
@@ -71,10 +75,10 @@ public sealed class TankFire : MonoBehaviour
     public void FireAt(Vector3 target)
     {
         if (SelectedWeapon == 4 && !HasTeleportMark) return;
-        Vector3 muzzle = cannon.position + cannon.forward * (Mathf.Abs(cannon.lossyScale.z) * 0.5f + 0.2f);
+        Vector3 shotOrigin = muzzle != null ? muzzle.position : cannon.position + cannon.forward * (Mathf.Abs(cannon.lossyScale.z) * 0.5f + 0.2f);
         GameObject shot = GameObject.CreatePrimitive(PrimitiveType.Cube);
         shot.name = SelectedWeapon == 4 ? "Green Teleport Bullet" : SelectedWeapon == 3 ? "Yellow Acid Bullet" : BlueMissileSelected ? "Blue Missile" : "Red Projectile";
-        shot.transform.position = muzzle;
+        shot.transform.position = shotOrigin;
         shot.transform.localScale = Vector3.one * 0.2f;
         shot.GetComponent<Renderer>().sharedMaterial = SelectedWeapon == 4 ? teleportMaterial : SelectedWeapon == 3 ? acidMaterial : BlueMissileSelected ? missileMaterial : projectileMaterial;
         Destroy(shot.GetComponent<Collider>());
