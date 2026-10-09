@@ -22,6 +22,7 @@ public sealed class BlueMissile : MonoBehaviour
 
     private bool IsImpact(Collider collider)
     {
+        if (collider.GetComponent<SpeedPickup>() != null) return true;
         if (collider == floor) return true;
         EnemyAttack enemy = collider.GetComponentInParent<EnemyAttack>();
         return enemy != null && enemy.HitsRemaining > 0;
@@ -39,12 +40,14 @@ public sealed class BlueMissile : MonoBehaviour
         foreach (RaycastHit hit in hits)
         {
             if (!IsImpact(hit.collider)) continue;
+            SpeedPickup.DestroyFromShot(hit.collider);
             Explode(hit.point);
             return;
         }
         foreach (Collider overlap in Physics.OverlapSphere(end, 0.1f, ~0, QueryTriggerInteraction.Collide))
         {
             if (!IsImpact(overlap)) continue;
+            SpeedPickup.DestroyFromShot(overlap);
             Explode(end);
             return;
         }

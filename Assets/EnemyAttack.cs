@@ -11,6 +11,9 @@ public sealed class EnemyAttack : MonoBehaviour
     private Collider body;
     private float nextDamage;
     private DamageFlash damageFlash;
+    private float speedMultiplier = 1f;
+    public float CurrentSpeed => moveSpeed * speedMultiplier;
+    public void ApplyDoubleSpeed() => speedMultiplier = 2f;
 
     public void Initialize(TankHealth target)
     {
@@ -40,7 +43,7 @@ public sealed class EnemyAttack : MonoBehaviour
                 tank.TakeDamage(contactDamage);
             }
         }
-        else transform.position = Vector3.MoveTowards(transform.position, destination, moveSpeed * Time.deltaTime);
+        else transform.position = Vector3.MoveTowards(transform.position, destination, CurrentSpeed * Time.deltaTime);
     }
 
     public void ReceiveShot()
@@ -50,6 +53,8 @@ public sealed class EnemyAttack : MonoBehaviour
         damageFlash.Flash();
         if (HitsRemaining == 0)
         {
+            EnemyWaves waves = Object.FindFirstObjectByType<EnemyWaves>();
+            if (waves != null) waves.EnemyDefeated();
             foreach (Collider collider in GetComponentsInChildren<Collider>()) collider.enabled = false;
             Destroy(gameObject, 0.18f);
         }

@@ -9,6 +9,12 @@ public sealed class EnemyWaves : MonoBehaviour
     [SerializeField] private GameObject enemyPrefab;
     public int WaveNumber { get; private set; }
     public int EnemiesAlive => enemies.Count;
+    public int EnemiesDestroyed { get; private set; }
+    public void EnemyDefeated()
+    {
+        EnemiesDestroyed++;
+        if (EnemiesDestroyed % 5 == 0) SpeedPickup.Spawn(floor);
+    }
     private readonly List<EnemyAttack> enemies = new List<EnemyAttack>();
 
     private void Start()

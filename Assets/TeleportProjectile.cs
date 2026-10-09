@@ -19,6 +19,12 @@ public sealed class TeleportProjectile : MonoBehaviour
 
     private bool Impact(Collider collider)
     {
+        if (SpeedPickup.DestroyFromShot(collider))
+        {
+            finished = true;
+            Destroy(gameObject);
+            return true;
+        }
         EnemyAttack enemy = collider.GetComponentInParent<EnemyAttack>();
         if (enemy != null && enemy.HitsRemaining > 0)
         {

@@ -23,6 +23,7 @@ public sealed class TankProjectile : MonoBehaviour
         System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
         foreach (RaycastHit hit in hits)
         {
+            if (SpeedPickup.DestroyFromShot(hit.collider)) { Destroy(gameObject); return; }
             EnemyAttack enemy = hit.collider.GetComponentInParent<EnemyAttack>();
             if (enemy == null || enemy.HitsRemaining <= 0) continue;
             enemy.ReceiveShot();
@@ -31,6 +32,7 @@ public sealed class TankProjectile : MonoBehaviour
         }
         foreach (Collider overlap in Physics.OverlapSphere(end, 0.1f))
         {
+            if (SpeedPickup.DestroyFromShot(overlap)) { Destroy(gameObject); return; }
             EnemyAttack enemy = overlap.GetComponentInParent<EnemyAttack>();
             if (enemy == null || enemy.HitsRemaining <= 0) continue;
             enemy.ReceiveShot();
