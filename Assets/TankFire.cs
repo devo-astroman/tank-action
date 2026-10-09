@@ -61,7 +61,7 @@ public sealed class TankFire : MonoBehaviour
         if (direction.sqrMagnitude < 0.0001f) return;
         cannon.rotation = Quaternion.LookRotation(direction.normalized, Vector3.up);
         cannon.position = origin + cannon.forward * barrelOffset * transform.lossyScale.z;
-        if (mouse.leftButton.wasPressedThisFrame && Time.time >= nextFire)
+        if (mouse.leftButton.isPressed && Time.time >= nextFire && (SelectedWeapon != 4 || HasTeleportMark))
         {
             nextFire = Time.time + CurrentFireInterval;
             FireAt(hit.point);
