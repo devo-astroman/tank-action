@@ -394,8 +394,8 @@ MonoBehaviour:
   - {fileID: 1185977255}
   - {fileID: 1811444738}
   floor: {fileID: 1100000004}
-  enemyPrefab: {fileID: 1052328166586153462, guid: cba3b0a7f5ebb4f4a98f6b5a7fe1ec5a, type: 3}
-  firerEnemyPrefab: {fileID: 1801602729775502095, guid: 3185ae7d9d2985942b3bc95955cfa574, type: 3}
+  enemyPrefab: {fileID: 9082843281568753594, guid: cf6a785627bb2394ba580a0ca0f05974, type: 3}
+  firerEnemyPrefab: {fileID: 7126427273855935999, guid: 70ee789f7a1d9c54798d990ec6435bcb, type: 3}
 --- !u!1 &451093152
 GameObject:
   m_ObjectHideFlags: 0
@@ -833,6 +833,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CubeMovement
   moveSpeed: 5
+  turnSpeed: 540
 --- !u!114 &822970644
 MonoBehaviour:
   m_ObjectHideFlags: 0
