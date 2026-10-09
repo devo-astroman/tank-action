@@ -51,7 +51,8 @@ public sealed class SpeedPickup : MonoBehaviour
             foreach (Collider overlap in Physics.OverlapBox(position, Vector3.one * 0.4f))
                 if (overlap != floor && !overlap.transform.IsChildOf(regionRoot)) { occupied = true; break; }
             if (occupied) continue;
-            GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            GameObject cube = new GameObject("Power Up");
+            cube.AddComponent<BoxCollider>();
             cube.name = "Double Speed Pickup";
             cube.transform.position = position;
             cube.transform.localScale = Vector3.one * 0.7f;
@@ -59,20 +60,29 @@ public sealed class SpeedPickup : MonoBehaviour
             pickup.Type = forcedType ?? (Random.value < 0.5f ? PowerUpType.DoubleSpeed : PowerUpType.DoubleFireRate);
             cube.name = pickup.Type == PowerUpType.DoubleSpeed ? "Double Speed Pickup" : "Double Fire Rate Pickup";
             Shader shader = Shader.Find("Universal Render Pipeline/Unlit") ?? Shader.Find("Sprites/Default");
-            pickup.material = new Material(shader) { color = Color.white };
-            cube.GetComponent<Renderer>().sharedMaterial = pickup.material;
+            GameObject model = Resources.Load<GameObject>("Powerups/WoodenBoxPickupModel");
+            if (model != null) Instantiate(model, cube.transform, false);
             var labelObject = new GameObject("Power Up Label");
             labelObject.transform.SetParent(cube.transform, false);
             labelObject.transform.localPosition = new Vector3(0f, 1.2f, 0f);
             var text = labelObject.AddComponent<TMPro.TextMeshPro>();
             text.font = Resources.Load<TMPro.TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
             text.text = pickup.Type == PowerUpType.DoubleSpeed ? "speed x2" : "fire rate x2";
-            text.fontSize = 5f;
+            text.fontSize = 6f;
             text.alignment = TMPro.TextAlignmentOptions.Center;
             text.color = Color.white;
             text.outlineWidth = 0.2f;
             text.outlineColor = Color.black;
-            text.rectTransform.sizeDelta = new Vector2(4f, 1f);
+            text.rectTransform.sizeDelta = new Vector2(4.8f, 1.2f);
+            GameObject background = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            background.name = "Label Background";
+            background.transform.SetParent(labelObject.transform, false);
+            background.transform.localPosition = new Vector3(0f, 0f, 0.02f);
+            background.transform.localScale = new Vector3(4.8f, 0.9f, 1f);
+            background.GetComponent<Collider>().enabled = false;
+            Destroy(background.GetComponent<Collider>());
+            pickup.material = new Material(shader) { color = Color.black };
+            background.GetComponent<Renderer>().sharedMaterial = pickup.material;
             pickup.billboard = labelObject.transform;
             Destroy(cube, 3f);
             return pickup;
