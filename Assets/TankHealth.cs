@@ -6,11 +6,18 @@ public sealed class TankHealth : MonoBehaviour
     [SerializeField, Min(1)] private int maxHealth = 100;
     public int CurrentHealth { get; private set; }
     public bool IsAlive => CurrentHealth > 0;
-    private void Awake() => CurrentHealth = maxHealth;
+    private DamageFlash damageFlash;
+    private void Awake()
+    {
+        CurrentHealth = maxHealth;
+        damageFlash = GetComponent<DamageFlash>();
+        if (damageFlash == null) damageFlash = gameObject.AddComponent<DamageFlash>();
+    }
     public void TakeDamage(int amount)
     {
-        if (!IsAlive) return;
+        if (!IsAlive || amount <= 0) return;
         CurrentHealth = Mathf.Max(0, CurrentHealth - Mathf.Max(0, amount));
+        damageFlash.Flash();
         if (!IsAlive)
         {
             GetComponent<CubeMovement>().enabled = false;

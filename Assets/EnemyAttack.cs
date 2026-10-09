@@ -10,12 +10,15 @@ public sealed class EnemyAttack : MonoBehaviour
     private Collider tankCollider;
     private Collider body;
     private float nextDamage;
+    private DamageFlash damageFlash;
 
     public void Initialize(TankHealth target)
     {
         tank = target;
         tankCollider = target.GetComponent<Collider>();
         body = GetComponent<Collider>();
+        damageFlash = GetComponent<DamageFlash>();
+        if (damageFlash == null) damageFlash = gameObject.AddComponent<DamageFlash>();
     }
 
     private void Update()
@@ -44,10 +47,11 @@ public sealed class EnemyAttack : MonoBehaviour
     {
         if (HitsRemaining <= 0) return;
         HitsRemaining--;
+        damageFlash.Flash();
         if (HitsRemaining == 0)
         {
             foreach (Collider collider in GetComponentsInChildren<Collider>()) collider.enabled = false;
-            Destroy(gameObject);
+            Destroy(gameObject, 0.18f);
         }
     }
 }
