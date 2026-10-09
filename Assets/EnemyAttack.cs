@@ -15,8 +15,9 @@ public sealed class EnemyAttack : MonoBehaviour
     public float CurrentSpeed => moveSpeed * (Time.time < speedBoostUntil ? 2f : 1f);
     public void ApplyDoubleSpeed() => speedBoostUntil = Time.time + 10f;
 
-    public void Initialize(TankHealth target)
+    public void Initialize(TankHealth target, int hits = 3)
     {
+        HitsRemaining = Mathf.Max(1, hits);
         tank = target;
         tankCollider = target.GetComponent<Collider>();
         body = GetComponent<Collider>();

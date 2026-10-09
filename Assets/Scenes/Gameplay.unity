@@ -395,6 +395,7 @@ MonoBehaviour:
   - {fileID: 1811444738}
   floor: {fileID: 1100000004}
   enemyPrefab: {fileID: 1052328166586153462, guid: cba3b0a7f5ebb4f4a98f6b5a7fe1ec5a, type: 3}
+  firerEnemyPrefab: {fileID: 1801602729775502095, guid: 3185ae7d9d2985942b3bc95955cfa574, type: 3}
 --- !u!1 &451093152
 GameObject:
   m_ObjectHideFlags: 0
