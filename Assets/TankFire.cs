@@ -16,6 +16,10 @@ public sealed class TankFire : MonoBehaviour
     public int SelectedWeapon { get; private set; } = 1;
     public bool BlueMissileSelected => SelectedWeapon == 2;
     private Material acidMaterial;
+    private Material teleportMaterial;
+    private GameObject teleportMarker;
+    public bool HasTeleportMark { get; private set; }
+    public Vector3 TeleportPoint { get; private set; }
     [SerializeField, Min(0.1f)] private float missileBlastRadius = 3f;
 
     private void Awake()
@@ -29,6 +33,7 @@ public sealed class TankFire : MonoBehaviour
         projectileMaterial = new Material(shader) { color = Color.red };
         missileMaterial = new Material(shader) { color = Color.blue };
         acidMaterial = new Material(shader) { color = Color.yellow };
+        teleportMaterial = new Material(shader) { color = Color.green };
     }
 
     private void Update()
@@ -39,12 +44,14 @@ public sealed class TankFire : MonoBehaviour
             if (keyboard.digit1Key.wasPressedThisFrame) SelectedWeapon = 1;
             if (keyboard.digit2Key.wasPressedThisFrame) SelectedWeapon = 2;
             if (keyboard.digit3Key.wasPressedThisFrame) SelectedWeapon = 3;
+            if (keyboard.digit4Key.wasPressedThisFrame) SelectedWeapon = 4;
         }
         Mouse mouse = Mouse.current;
         Camera camera = Camera.main;
         if (mouse == null || camera == null || floor == null) return;
         Ray ray = camera.ScreenPointToRay(mouse.position.ReadValue());
         if (!floor.Raycast(ray, out RaycastHit hit, 1000f)) return;
+        if (SelectedWeapon == 4 && mouse.rightButton.wasPressedThisFrame) PlaceTeleportMark(hit.point);
         Vector3 origin = transform.TransformPoint(pivot);
         Vector3 direction = hit.point - origin;
         direction.y = 0f;
@@ -60,16 +67,35 @@ public sealed class TankFire : MonoBehaviour
 
     public void FireAt(Vector3 target)
     {
+        if (SelectedWeapon == 4 && !HasTeleportMark) return;
         Vector3 muzzle = cannon.position + cannon.forward * (Mathf.Abs(cannon.lossyScale.z) * 0.5f + 0.2f);
         GameObject shot = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        shot.name = SelectedWeapon == 3 ? "Yellow Acid Bullet" : BlueMissileSelected ? "Blue Missile" : "Red Projectile";
+        shot.name = SelectedWeapon == 4 ? "Green Teleport Bullet" : SelectedWeapon == 3 ? "Yellow Acid Bullet" : BlueMissileSelected ? "Blue Missile" : "Red Projectile";
         shot.transform.position = muzzle;
         shot.transform.localScale = Vector3.one * 0.2f;
-        shot.GetComponent<Renderer>().sharedMaterial = SelectedWeapon == 3 ? acidMaterial : BlueMissileSelected ? missileMaterial : projectileMaterial;
+        shot.GetComponent<Renderer>().sharedMaterial = SelectedWeapon == 4 ? teleportMaterial : SelectedWeapon == 3 ? acidMaterial : BlueMissileSelected ? missileMaterial : projectileMaterial;
         Destroy(shot.GetComponent<Collider>());
-        if (SelectedWeapon != 1)
+        if (SelectedWeapon == 4)
+            shot.AddComponent<TeleportProjectile>().Initialize(target + Vector3.up * 0.1f, projectileSpeed, TeleportPoint, floor);
+        else if (SelectedWeapon != 1)
             shot.AddComponent<BlueMissile>().Initialize(target + Vector3.up * 0.1f, projectileSpeed, floor, missileBlastRadius, SelectedWeapon == 3);
         else shot.AddComponent<TankProjectile>().Initialize(target + Vector3.up * 0.1f, projectileSpeed);
+    }
+
+    public void PlaceTeleportMark(Vector3 point)
+    {
+        HasTeleportMark = true;
+        TeleportPoint = point;
+        if (teleportMarker == null)
+        {
+            teleportMarker = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            teleportMarker.name = "Teleport Mark";
+            teleportMarker.GetComponent<Collider>().enabled = false;
+            Destroy(teleportMarker.GetComponent<Collider>());
+            teleportMarker.GetComponent<Renderer>().sharedMaterial = teleportMaterial;
+            teleportMarker.transform.localScale = new Vector3(1.2f, 0.025f, 1.2f);
+        }
+        teleportMarker.transform.position = point + Vector3.up * 0.03f;
     }
 
     private void OnDestroy()
@@ -77,5 +103,7 @@ public sealed class TankFire : MonoBehaviour
         if (projectileMaterial != null) Destroy(projectileMaterial);
         if (missileMaterial != null) Destroy(missileMaterial);
         if (acidMaterial != null) Destroy(acidMaterial);
+        if (teleportMarker != null) Destroy(teleportMarker);
+        if (teleportMaterial != null) Destroy(teleportMaterial);
     }
 }

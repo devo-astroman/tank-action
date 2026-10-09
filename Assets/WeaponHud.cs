@@ -7,6 +7,7 @@ public sealed class WeaponHud : MonoBehaviour
     private UnityEngine.UI.Image normal;
     private UnityEngine.UI.Image missile;
     private UnityEngine.UI.Image acid;
+    private UnityEngine.UI.Image teleport;
     private GameObject canvasObject;
     private TMPro.TMP_FontAsset font;
     private readonly Color selected = new Color(1f, 0.78f, 0.15f);
@@ -29,7 +30,7 @@ public sealed class WeaponHud : MonoBehaviour
         rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0f);
         rect.pivot = new Vector2(0.5f, 0f);
         rect.anchoredPosition = new Vector2(0f, 24f);
-        rect.sizeDelta = new Vector2(240f, 72f);
+        rect.sizeDelta = new Vector2(324f, 72f);
         var layout = row.GetComponent<UnityEngine.UI.HorizontalLayoutGroup>();
         layout.spacing = 12f;
         layout.childControlWidth = layout.childControlHeight = false;
@@ -37,6 +38,7 @@ public sealed class WeaponHud : MonoBehaviour
         normal = CreateSlot(row.transform, "Normal", "N");
         missile = CreateSlot(row.transform, "Missile", "M");
         acid = CreateSlot(row.transform, "Acid", "A");
+        teleport = CreateSlot(row.transform, "Teleport", "T");
         Refresh();
     }
 
@@ -80,6 +82,7 @@ public sealed class WeaponHud : MonoBehaviour
         normal.color = current == 1 ? selected : unselected;
         missile.color = current == 2 ? selected : unselected;
         acid.color = current == 3 ? selected : unselected;
+        teleport.color = current == 4 ? selected : unselected;
     }
 
     private void OnDestroy()
