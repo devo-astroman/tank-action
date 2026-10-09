@@ -11,6 +11,9 @@ public sealed class TankFire : MonoBehaviour
     private Vector3 pivot;
     private float barrelOffset;
     private float nextFire;
+    private float fireRateBoostUntil;
+    public float CurrentFireInterval => fireInterval / (Time.time < fireRateBoostUntil ? 2f : 1f);
+    public void ApplyDoubleFireRate() => fireRateBoostUntil = Time.time + 10f;
     private Material projectileMaterial;
     private Material missileMaterial;
     public int SelectedWeapon { get; private set; } = 1;
@@ -60,7 +63,7 @@ public sealed class TankFire : MonoBehaviour
         cannon.position = origin + cannon.forward * barrelOffset * transform.lossyScale.z;
         if (mouse.leftButton.wasPressedThisFrame && Time.time >= nextFire)
         {
-            nextFire = Time.time + fireInterval;
+            nextFire = Time.time + CurrentFireInterval;
             FireAt(hit.point);
         }
     }

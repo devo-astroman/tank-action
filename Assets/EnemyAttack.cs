@@ -11,9 +11,9 @@ public sealed class EnemyAttack : MonoBehaviour
     private Collider body;
     private float nextDamage;
     private DamageFlash damageFlash;
-    private float speedMultiplier = 1f;
-    public float CurrentSpeed => moveSpeed * speedMultiplier;
-    public void ApplyDoubleSpeed() => speedMultiplier = 2f;
+    private float speedBoostUntil;
+    public float CurrentSpeed => moveSpeed * (Time.time < speedBoostUntil ? 2f : 1f);
+    public void ApplyDoubleSpeed() => speedBoostUntil = Time.time + 10f;
 
     public void Initialize(TankHealth target)
     {
