@@ -6,21 +6,19 @@ public sealed class EnemyWaves : MonoBehaviour
     [SerializeField] private TankHealth tank;
     [SerializeField] private Transform[] spawnPoints;
     [SerializeField] private Collider floor;
+    [SerializeField] private GameObject enemyPrefab;
     public int WaveNumber { get; private set; }
     public int EnemiesAlive => enemies.Count;
     private readonly List<EnemyAttack> enemies = new List<EnemyAttack>();
-    private Material enemyMaterial;
 
     private void Start()
     {
-        if (tank == null || floor == null || spawnPoints == null || spawnPoints.Length == 0)
+        if (tank == null || floor == null || enemyPrefab == null || spawnPoints == null || spawnPoints.Length == 0)
         {
-            Debug.LogError("EnemyWaves needs the tank, floor, and spawn points assigned.");
+            Debug.LogError("EnemyWaves needs the enemy prefab, tank, floor, and spawn points assigned.");
             enabled = false;
             return;
         }
-        Shader shader = Shader.Find("Universal Render Pipeline/Lit") ?? Shader.Find("Standard");
-        enemyMaterial = new Material(shader) { color = new Color(0.65f, 0.12f, 0.85f) };
         SpawnWave();
     }
 
@@ -40,19 +38,22 @@ public sealed class EnemyWaves : MonoBehaviour
             Vector3 position = spawn.position;
             int ring = i / spawnPoints.Length;
             position += new Vector3(ring * 1.2f, 0f, 0f);
-            position.y = floor.bounds.max.y + 0.5f;
-            GameObject enemy = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            position.y = floor.bounds.max.y;
+            GameObject enemy = Instantiate(enemyPrefab, position, enemyPrefab.transform.rotation);
             enemy.name = "Enemy Wave " + WaveNumber + " - " + (i + 1);
-            enemy.transform.position = position;
-            enemy.GetComponent<Renderer>().sharedMaterial = enemyMaterial;
-            EnemyAttack attack = enemy.AddComponent<EnemyAttack>();
+            // Respect the prefab's pivot and size when placing it on the floor.
+            Renderer[] renderers = enemy.GetComponentsInChildren<Renderer>();
+            if (renderers.Length > 0)
+            {
+                Bounds bounds = renderers[0].bounds;
+                foreach (Renderer renderer in renderers) bounds.Encapsulate(renderer.bounds);
+                enemy.transform.position += Vector3.up * (floor.bounds.max.y - bounds.min.y);
+            }
+            EnemyAttack attack = enemy.GetComponent<EnemyAttack>();
+            if (attack == null) attack = enemy.AddComponent<EnemyAttack>();
             attack.Initialize(tank);
             enemies.Add(attack);
         }
     }
 
-    private void OnDestroy()
-    {
-        if (enemyMaterial != null) Destroy(enemyMaterial);
-    }
 }

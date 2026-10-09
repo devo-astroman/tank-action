@@ -46,7 +46,7 @@ public sealed class EnemyAttack : MonoBehaviour
         HitsRemaining--;
         if (HitsRemaining == 0)
         {
-            body.enabled = false;
+            foreach (Collider collider in GetComponentsInChildren<Collider>()) collider.enabled = false;
             Destroy(gameObject);
         }
     }
