@@ -395,6 +395,7 @@ GameObject:
   - component: {fileID: 822970643}
   - component: {fileID: 822970644}
   - component: {fileID: 822970645}
+  - component: {fileID: 822970646}
   m_Layer: 0
   m_Name: Tank
   m_TagString: Untagged
@@ -525,6 +526,7 @@ MonoBehaviour:
   floor: {fileID: 1100000004}
   projectileSpeed: 15
   fireInterval: 0.2
+  missileBlastRadius: 3
 --- !u!114 &822970645
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -538,6 +540,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TankHealth
   maxHealth: 100
+--- !u!114 &822970646
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 822970638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52fd4d4bae32ea047b231dd6da4d8661, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponHud
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,7 +13,9 @@ public sealed class TankFire : MonoBehaviour
     private float nextFire;
     private Material projectileMaterial;
     private Material missileMaterial;
-    public bool BlueMissileSelected { get; private set; }
+    public int SelectedWeapon { get; private set; } = 1;
+    public bool BlueMissileSelected => SelectedWeapon == 2;
+    private Material acidMaterial;
     [SerializeField, Min(0.1f)] private float missileBlastRadius = 3f;
 
     private void Awake()
@@ -26,6 +28,7 @@ public sealed class TankFire : MonoBehaviour
         if (shader == null) shader = Shader.Find("Standard");
         projectileMaterial = new Material(shader) { color = Color.red };
         missileMaterial = new Material(shader) { color = Color.blue };
+        acidMaterial = new Material(shader) { color = Color.yellow };
     }
 
     private void Update()
@@ -33,8 +36,9 @@ public sealed class TankFire : MonoBehaviour
         Keyboard keyboard = Keyboard.current;
         if (keyboard != null)
         {
-            if (keyboard.digit1Key.wasPressedThisFrame) BlueMissileSelected = false;
-            if (keyboard.digit2Key.wasPressedThisFrame) BlueMissileSelected = true;
+            if (keyboard.digit1Key.wasPressedThisFrame) SelectedWeapon = 1;
+            if (keyboard.digit2Key.wasPressedThisFrame) SelectedWeapon = 2;
+            if (keyboard.digit3Key.wasPressedThisFrame) SelectedWeapon = 3;
         }
         Mouse mouse = Mouse.current;
         Camera camera = Camera.main;
@@ -58,13 +62,13 @@ public sealed class TankFire : MonoBehaviour
     {
         Vector3 muzzle = cannon.position + cannon.forward * (Mathf.Abs(cannon.lossyScale.z) * 0.5f + 0.2f);
         GameObject shot = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        shot.name = BlueMissileSelected ? "Blue Missile" : "Red Projectile";
+        shot.name = SelectedWeapon == 3 ? "Yellow Acid Bullet" : BlueMissileSelected ? "Blue Missile" : "Red Projectile";
         shot.transform.position = muzzle;
         shot.transform.localScale = Vector3.one * 0.2f;
-        shot.GetComponent<Renderer>().sharedMaterial = BlueMissileSelected ? missileMaterial : projectileMaterial;
+        shot.GetComponent<Renderer>().sharedMaterial = SelectedWeapon == 3 ? acidMaterial : BlueMissileSelected ? missileMaterial : projectileMaterial;
         Destroy(shot.GetComponent<Collider>());
-        if (BlueMissileSelected)
-            shot.AddComponent<BlueMissile>().Initialize(target + Vector3.up * 0.1f, projectileSpeed, floor, missileBlastRadius);
+        if (SelectedWeapon != 1)
+            shot.AddComponent<BlueMissile>().Initialize(target + Vector3.up * 0.1f, projectileSpeed, floor, missileBlastRadius, SelectedWeapon == 3);
         else shot.AddComponent<TankProjectile>().Initialize(target + Vector3.up * 0.1f, projectileSpeed);
     }
 
@@ -72,5 +76,6 @@ public sealed class TankFire : MonoBehaviour
     {
         if (projectileMaterial != null) Destroy(projectileMaterial);
         if (missileMaterial != null) Destroy(missileMaterial);
+        if (acidMaterial != null) Destroy(acidMaterial);
     }
 }

@@ -8,13 +8,15 @@ public sealed class BlueMissile : MonoBehaviour
     private float blastRadius;
     private Collider floor;
     private bool exploded;
+    private bool acid;
 
-    public void Initialize(Vector3 destination, float moveSpeed, Collider ground, float radius)
+    public void Initialize(Vector3 destination, float moveSpeed, Collider ground, float radius, bool createAcid = false)
     {
         target = destination;
         speed = moveSpeed;
         floor = ground;
         blastRadius = radius;
+        acid = createAcid;
         Destroy(gameObject, 10f);
     }
 
@@ -54,6 +56,12 @@ public sealed class BlueMissile : MonoBehaviour
     {
         if (exploded) return;
         exploded = true;
+        if (acid)
+        {
+            AcidPuddle.Create(new Vector3(center.x, floor.bounds.max.y, center.z));
+            Destroy(gameObject);
+            return;
+        }
         var damaged = new HashSet<EnemyAttack>();
         foreach (Collider collider in Physics.OverlapSphere(center, blastRadius, ~0, QueryTriggerInteraction.Collide))
         {
