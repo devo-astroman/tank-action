@@ -12,6 +12,9 @@ public sealed class TankFire : MonoBehaviour
     private float barrelOffset;
     private float nextFire;
     private Material projectileMaterial;
+    private Material missileMaterial;
+    public bool BlueMissileSelected { get; private set; }
+    [SerializeField, Min(0.1f)] private float missileBlastRadius = 3f;
 
     private void Awake()
     {
@@ -22,10 +25,17 @@ public sealed class TankFire : MonoBehaviour
         Shader shader = Shader.Find("Universal Render Pipeline/Lit");
         if (shader == null) shader = Shader.Find("Standard");
         projectileMaterial = new Material(shader) { color = Color.red };
+        missileMaterial = new Material(shader) { color = Color.blue };
     }
 
     private void Update()
     {
+        Keyboard keyboard = Keyboard.current;
+        if (keyboard != null)
+        {
+            if (keyboard.digit1Key.wasPressedThisFrame) BlueMissileSelected = false;
+            if (keyboard.digit2Key.wasPressedThisFrame) BlueMissileSelected = true;
+        }
         Mouse mouse = Mouse.current;
         Camera camera = Camera.main;
         if (mouse == null || camera == null || floor == null) return;
@@ -48,16 +58,19 @@ public sealed class TankFire : MonoBehaviour
     {
         Vector3 muzzle = cannon.position + cannon.forward * (Mathf.Abs(cannon.lossyScale.z) * 0.5f + 0.2f);
         GameObject shot = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        shot.name = "Red Projectile";
+        shot.name = BlueMissileSelected ? "Blue Missile" : "Red Projectile";
         shot.transform.position = muzzle;
         shot.transform.localScale = Vector3.one * 0.2f;
-        shot.GetComponent<Renderer>().sharedMaterial = projectileMaterial;
+        shot.GetComponent<Renderer>().sharedMaterial = BlueMissileSelected ? missileMaterial : projectileMaterial;
         Destroy(shot.GetComponent<Collider>());
-        shot.AddComponent<TankProjectile>().Initialize(target + Vector3.up * 0.1f, projectileSpeed);
+        if (BlueMissileSelected)
+            shot.AddComponent<BlueMissile>().Initialize(target + Vector3.up * 0.1f, projectileSpeed, floor, missileBlastRadius);
+        else shot.AddComponent<TankProjectile>().Initialize(target + Vector3.up * 0.1f, projectileSpeed);
     }
 
     private void OnDestroy()
     {
         if (projectileMaterial != null) Destroy(projectileMaterial);
+        if (missileMaterial != null) Destroy(missileMaterial);
     }
 }
