@@ -25,6 +25,7 @@ public sealed class TankHealth : MonoBehaviour
         {
             GetComponent<CubeMovement>().enabled = false;
             GetComponent<TankFire>().enabled = false;
+            GameMenus.ShowDestroyed();
             Debug.Log("Tank destroyed. Restart Play mode to try again.");
         }
     }

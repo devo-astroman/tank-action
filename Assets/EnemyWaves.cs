@@ -26,13 +26,13 @@ public sealed class EnemyWaves : MonoBehaviour
             enabled = false;
             return;
         }
-        SpawnWave();
+        if (GameMenus.IsPlaying) SpawnWave();
     }
 
     private void Update()
     {
         enemies.RemoveAll(enemy => enemy == null);
-        if (tank != null && tank.IsAlive && enemies.Count == 0) SpawnWave();
+        if (GameMenus.IsPlaying && tank != null && tank.IsAlive && enemies.Count == 0) SpawnWave();
     }
 
     private void SpawnWave()

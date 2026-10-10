@@ -74,7 +74,8 @@ public sealed class GameHud : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (tank.IsAlive) ElapsedTime += Time.deltaTime;
+        canvasObject.SetActive(GameMenus.IsPlaying);
+        if (GameMenus.IsPlaying && tank.IsAlive) ElapsedTime += Time.deltaTime;
         int seconds = Mathf.FloorToInt(ElapsedTime);
         string time = $"{seconds / 60:00}:{seconds % 60:00}";
         waveText.text = "Wave " + (waves != null ? waves.WaveNumber : 0);
