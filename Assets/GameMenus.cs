@@ -15,12 +15,21 @@ public sealed class GameMenus : MonoBehaviour
     private GameObject main, credits, destroyed;
     private TextMeshProUGUI finalScore;
     private TMP_FontAsset font;
+    [SerializeField] private AudioClip gameplayMusic;
+    [SerializeField] private AudioClip mainMenuMusic;
+    [SerializeField] private AudioClip restartMenuMusic;
+    private AudioSource music;
 
     private void Awake()
     {
         instance = this;
         IsPlaying = false;
         Time.timeScale = 1;
+        music = gameObject.AddComponent<AudioSource>();
+        music.playOnAwake = false;
+        music.loop = true;
+        music.spatialBlend = 0;
+        music.volume = 0.35f;
         font = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
         if (Object.FindFirstObjectByType<EventSystem>() == null)
             new GameObject("Menu Event System", typeof(EventSystem), typeof(InputSystemUIInputModule));
@@ -106,8 +115,15 @@ public sealed class GameMenus : MonoBehaviour
     }
 
     private void HideScreens() { main.SetActive(false); credits.SetActive(false); destroyed.SetActive(false); }
-    public void StartGame() { HideScreens(); SetGameplay(true); Time.timeScale = 1; }
-    public void ShowMain() { HideScreens(); SetGameplay(false); main.SetActive(true); }
+    private void PlayMusic(AudioClip clip)
+    {
+        if (music.clip == clip && music.isPlaying) return;
+        music.Stop();
+        music.clip = clip;
+        if (clip != null) music.Play();
+    }
+    public void StartGame() { HideScreens(); SetGameplay(true); Time.timeScale = 1; PlayMusic(gameplayMusic); }
+    public void ShowMain() { HideScreens(); SetGameplay(false); main.SetActive(true); PlayMusic(mainMenuMusic); }
     public void ShowCredits() { HideScreens(); credits.SetActive(true); }
     public void Restart() { startOnLoad = true; Time.timeScale = 1; SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); }
     public void MainMenu() { startOnLoad = false; Time.timeScale = 1; SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); }
@@ -117,6 +133,7 @@ public sealed class GameMenus : MonoBehaviour
         instance.HideScreens(); instance.SetGameplay(false);
         instance.finalScore.text = "Score " + Object.FindFirstObjectByType<GameHud>().Score;
         instance.destroyed.SetActive(true);
+        instance.PlayMusic(instance.restartMenuMusic);
         Time.timeScale = 0;
     }
     private void OnDestroy() { if (instance == this) instance = null; if (canvasObject != null) Destroy(canvasObject); }

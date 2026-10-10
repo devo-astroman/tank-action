@@ -935,6 +935,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d2775e3d895c9c40910000d1fe0f4e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameMenus
+  gameplayMusic: {fileID: 8300000, guid: c4bf2aae07048b04b8f1db2b7888d807, type: 3}
+  mainMenuMusic: {fileID: 8300000, guid: 6996267b41abb5040bb0823cb91099ec, type: 3}
+  restartMenuMusic: {fileID: 8300000, guid: 95cdfbcdde882504586735d2f5a6700f, type: 3}
 --- !u!4 &829520952
 Transform:
   m_ObjectHideFlags: 0
