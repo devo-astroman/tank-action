@@ -57,6 +57,7 @@ public sealed class EnemyAttack : MonoBehaviour
         damageFlash.Flash();
         if (HitsRemaining == 0)
         {
+            GameHud.AddScore(GetComponent<FirerEnemy>() != null ? 200 : 100);
             GameSound.Play(destroySound);
             EnemyWaves waves = Object.FindFirstObjectByType<EnemyWaves>();
             if (waves != null) waves.EnemyDefeated();

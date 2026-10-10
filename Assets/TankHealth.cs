@@ -7,6 +7,7 @@ public sealed class TankHealth : MonoBehaviour
     [SerializeField] private AudioClip damageSound;
     public int CurrentHealth { get; private set; }
     public bool IsAlive => CurrentHealth > 0;
+    public int MaxHealth => maxHealth;
     private DamageFlash damageFlash;
     private void Awake()
     {

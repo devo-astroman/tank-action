@@ -100,6 +100,7 @@ public sealed class SpeedPickup : MonoBehaviour
             {
                 if (Type == PowerUpType.DoubleSpeed) tank.GetComponent<CubeMovement>().ApplyDoubleSpeed();
                 else tank.GetComponent<TankFire>().ApplyDoubleFireRate();
+                GameHud.AddScore(150);
                 Consume();
                 return;
             }
